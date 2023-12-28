@@ -38,6 +38,8 @@ def get_longest_time_for_playing(player_data):
 
 # 获取玩家数据，返回最晚过图的图名和时间
 def get_latest_time_for_passing_map(player_data):
+    smap=''
+    sdate=''
     stime = timedelta(hours=24)
     for types_key, types_value in player_data['types'].items():
         for maps_key, maps_value in types_value["maps"].items():
