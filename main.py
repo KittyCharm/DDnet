@@ -8,7 +8,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def welcome_interface():
-    return '欢迎使用DDnet年度总结报告'
+    return ''
 
 
 @app.route('/<player_name>/')
