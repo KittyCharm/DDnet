@@ -8,7 +8,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def welcome_interface():
-    return '欢迎使用'
+    return '欢迎使用你好'
 
 
 @app.route('/<player_name>/')
