@@ -15,6 +15,7 @@ def welcome_interface():
 def obtain_annual_summary(player_name):
     # player_data = getflie('data.json')
     player_data = get_player_data_from_ddnet(player_name)
+    player_name=' ['+player_name+'] '
     if player_data != '' and player_data != {}:
         # 输出过去一年游玩时间
         played_time = get_played_hours_last_year(player_data)
@@ -31,26 +32,26 @@ def obtain_annual_summary(player_name):
         if lasted_passing_map_information['map'] == '':
             return f'{player_name},看起来你在过去的一年一张图都没有过呢！'
         lasted_palaying_time = lasted_passing_map_information['time'].strftime('%Y-%m-%d %H:%M:%S')
-        lasted_palaying_map = lasted_passing_map_information['map']
+        lasted_palaying_map = '['+lasted_passing_map_information['map']+']'
         lasted_palaying_time_date = lasted_palaying_time[:10]
         lasted_palaying_time_time = lasted_palaying_time[11:]
         # print(f'最晚在{lasted_palaying_time}过图，过的图是{lasted_palaying_map}')
 
         # 输出过的最高分的图及分数
         map_with_highest_score_information = get_map_with_highest_score(player_data)
-        map_with_highest_score = random.choice(map_with_highest_score_information['map'])
+        map_with_highest_score = '['+random.choice(map_with_highest_score_information['map'])+']'
         highest_score = map_with_highest_score_information['score']
         # print(f'过的最高分的图是{map_with_highest_score},有{highest_score}分')
 
         # 输出通过次数最多的图级次数
         map_with_most_completion_times_information = get_map_with_most_completion_times(player_data)
-        map_with_most_completion_times = random.choice(map_with_most_completion_times_information['map'])
+        map_with_most_completion_times = '['+random.choice(map_with_most_completion_times_information['map'])+']'
         most_completion_times = map_with_most_completion_times_information['times']
         # print(f'通过次数最多的图是{map_with_most_completion_times},共通过了{most_completion_times}次')
 
         # 首次过的图及时间
         first_passing_map_information = get_first_passing_map_information(player_data)
-        first_passing_map = first_passing_map_information['map']
+        first_passing_map = '['+first_passing_map_information['map']+']'
         first_passing_map_time = first_passing_map_information['time'].strftime('%Y-%m-%d %H:%M:%S')
 
         # 全勤月
@@ -60,7 +61,7 @@ def obtain_annual_summary(player_name):
         # 最喜欢的搭档及合作次数
         favorite_partner_information = get_favorite_partner(player_data)
         if favorite_partner_information != '':
-            favorite_partner = favorite_partner_information['name']
+            favorite_partner = ' ['+favorite_partner_information['name']+'] '
             favorite_partner_times = favorite_partner_information['times']
 
         # 过去一年获得的分数
@@ -122,15 +123,18 @@ def obtain_annual_summary(player_name):
             '回顾过去的一年，你在游戏中的表现绝对令人钦佩。新的一年已经开始，希望你持续你的热情和才华，再创辉煌。无论是独自挑战还是与伙伴并肩作战，祝你都能享受其中的每一刻，取得更多的胜利。期待新的一年，你将有更多精彩的表现，祝游戏愉快！',
             '过去的一年，你在游戏中取得了许多值得庆祝的成就。新的一年，让我们期待你继续挑战自我，享受每一场游戏，并与伙伴共同前进。愿你的游戏之旅充满欢笑和胜利，期待你在未来创造更多的精彩瞬间。祝你在新的一年里游戏顺利，快乐无穷！']
 
+        #年度总结初版
         annual_summary = random.choice(annual_summary_start) + '\n' + random.choice(
             annual_summary_main_1)
 
+        #判断是否有全勤月，决定是否添加全勤信息
         if number_of_months != 0:
             annual_summary = annual_summary + random.choice(annual_summary_main_2)
 
         annual_summary = annual_summary + random.choice(annual_summary_main_3) + '\n' + random.choice(
             annual_summary_main_4)
 
+        #判断是否有和搭档一起玩过游戏，决定返回信息
         if favorite_partner_information != '':
             annual_summary = annual_summary + random.choice(annual_summary_main_5)
         else:
@@ -138,7 +142,55 @@ def obtain_annual_summary(player_name):
 
         annual_summary = annual_summary + '\n' + random.choice(annual_summary_end)
 
-        return annual_summary
+        #---------------------------------------------------------------------------------
+
+        #年度总结创新1版
+        annual_summary_1=f'自{first_passing_map_time}将{first_passing_map}初次攻下的那一刻起，喵~我们可爱的{player_name}在ddnet的冒险就正式启动啦！\n在过去的一年里，你用了{played_time}小时的宝贵时间来享受这款游戏，真是太投入啦！其中，你最长的一天游戏时间出现在{longest_time_date}，那天你玩了惊人的{longest_time}小时，简直是个打游戏的小怪兽呢！话说，你还记得在{lasted_palaying_time_date}深夜{lasted_palaying_time_time}你通关了{lasted_palaying_map}吗？这可是证明了你持之以恒的爱好和坚定不移的毅力哟！而你在{map_with_highest_score}获得的最高分数是惊人的{highest_score}分，这也足以证明你的技艺和实力了。'
+        if number_of_months != 0:
+            annual_summary_1+=f'喵~看到你在{full_attendance}这{number_of_months}个月中如此专注于游戏，真是让我感到钦佩！你每天都会抽出时间来享受游戏，真是个游戏狂魔呢！'
+        annual_summary_1+=f'过去的一年，你累积了{scores_obtained_past_year}分，这个数字就是对你努力和技巧的最好证明。\n在你的游戏历程中，{map_with_most_completion_times}显然是你最常挑战并成功的地图，你过了{most_completion_times}次，这充分展示了你对它的热爱和精通。与此同时，{favorite_partner}成为了你最喜欢的合作伙伴，你们两个一起过图了{favorite_partner_times}次，这可真是个强大的二人组合呢！\n回首过去的一年，你的表现无疑是让人眼花缭乱的。在新的一年里，我希望你能继续享受游戏的快乐，保持热情，接受更多的挑战，并与你的合作伙伴共同创造更多的辉煌！让我们一起期待未来的每一天，祝你游戏愉快，喵~！'
+
+        #年度总结创新2版
+        annual_summary_2=f'从{first_passing_map_time}你破解{first_passing_map}的那一刻开始，嘿嘿~{player_name}的ddnet之旅才算是真正开启了。\n过去一年你花了{played_time}小时在这款游戏中享乐，这种投入，简直像是柔情似水的恋人。最长的一天出现在{longest_time_date}，你和游戏度过了美妙的{longest_time}小时，这让人不禁会想起一场激情四溢的约会哦！记得那个夜晚吗？{lasted_palaying_time_date}深夜{lasted_palaying_time_time}你成功通关{lasted_palaying_map}，这就如同在月色下的柔情密语，证明了你的执着和热爱。而你在{map_with_highest_score}取得的最高分数是惊人的{highest_score}分，这可看出了你的游戏技巧如同熟练的爱情专家般流畅。'
+        if number_of_months != 0:
+            annual_summary_2+=f'在{full_attendance}这{number_of_months}个月里，你每天都与游戏共度时光，宛如痴迷的情人，每日都怀揣对她的思恋。'
+        annual_summary_2+=f'过去一年，你一共得到了{scores_obtained_past_year}分，这个数字就像是你对游戏的深情告白。\n要说起你最喜欢去的地方，那必须是{map_with_most_completion_times}了，你在这里成功攻克了{most_completion_times}次，像是情人间不断重复的甜蜜互动。而{favorite_partner}成为了你最常携手共进的伙伴，你们一同过关斩将了{favorite_partner_times}次，就像是两颗心跳步调一致的恋人。\n过去的一年，你的表现让人如痴如醉。在新的一年里，希望你继续享受游戏的乐趣，保持对挑战的热情，并与你的伙伴一起创造更多的浪漫时刻。期待未来的每一天，祝你游戏愉快，嘿嘿~！'
+
+        # 年度总结创新3版
+        annual_summary_3 =f'就从那个{first_passing_map_time}你首次攻克{first_passing_map}的时刻开始，哼~看来{player_name}也算是正式踏上了ddnet的旅程了嘛。\n在过去的一年中，你竟然花了{played_time}小时玩这款游戏。好吧，我承认，你这样的投入让我有些惊讶。你最长时间的游戏记录出现在{longest_time_date}，你居然玩了整整{longest_time}小时，恕我直言，你真是一个游戏疯子啊！而你在{lasted_palaying_time_date}深夜{lasted_palaying_time_time}通关{lasted_palaying_map}的壮举，虽然我不大愿意承认，但这确实证明了你的坚韧和热情。再说，你在{map_with_highest_score}获得的最高分数居然达到了{highest_score}分，这一定是运气好，对，一定是运气好。'
+        if number_of_months != 0:
+            annual_summary_3 +=f'在{full_attendance}这{number_of_months}个月里，你每天都会抽出时间来玩游戏，看来你果然是一个勤奋的人呢。'
+        annual_summary_3 +=f'过去一年，你累计获得了{scores_obtained_past_year}分，哼，虽然我不想说，但这个成绩确实证明了你的努力和才能。\n在你的游戏历程中，{map_with_most_completion_times}是你最常挑战并成功的地图，你居然过了{most_completion_times}次，这也反映出你对这张地图的熟悉和精通。同时，{favorite_partner}成为了你最频繁合作的伙伴，你们一起过图{favorite_partner_times}次，看来你们确实有很好的默契和团队精神。\n回顾过去一年，虽然我不想承认，但是你的表现确实出色。新的一年，愿你继续享受游戏，接受更多的挑战，并与你的伙伴一起创造更多的辉煌。期待未来的每一天，祝你游戏愉快，不过，别以为我会因此而佩服你哦！'
+
+        # 年度总结创新4版
+        annual_summary_4 =f'自{first_passing_map_time}你首次征服{first_passing_map}的那一刻开始...呵呵，我的{player_name}~你在ddnet的旅程终于启航了呢。\n你已经沉迷这款游戏整整{played_time}小时了，看来你在这个游戏中找到了属于你的乐趣呢。最长的一天是{longest_time_date}，你陪着游戏度过了{longest_time}小时，和她相处的时间好长啊，我都快嫉妒起来了哦。还记得那个晚上吗？在{lasted_palaying_time_date}深夜{lasted_palaying_time_time}，你完成了{lasted_palaying_map}，就像在黑暗中找到了亮光，你真的是太厉害了。而且你在{map_with_highest_score}拿下了最高的{highest_score}分，你真的是太棒了，我都有些无法直视了呢。'
+        if number_of_months != 0:
+            annual_summary_4 +=f'在过去的{full_attendance}个月里，你每天都会抽出时间来陪伴游戏，就像那个永远不离开她的骑士一样。'
+        annual_summary_4 +=f'过去的一年，你获得了{scores_obtained_past_year}分，这个数字就像是你对游戏的疯狂热爱的见证。\n在你的游戏历程中，{map_with_most_completion_times}是你最常通过的地图，成功通关了{most_completion_times}次，看来这个地方对你有特殊的意义呢。而{favorite_partner}成为了你最频繁合作的伙伴，你们一起过图了{favorite_partner_times}次，你们的默契真是令人羡慕啊。\n回顾过去的一年，你的表现自然是出色的，我也会一直在这里守候你，见证你的成长。新的一年，我希望你可以继续享受游戏的乐趣，接受更多的挑战，并与你的伙伴一起创造更多辉煌的记录。期待未来的每一天，祝你游戏愉快，我会一直在这里陪着你的，永远都不会离开哦~'
+
+        # 年度总结创新5版
+        annual_summary_5 =f'从{first_passing_map_time}你可爱地完成了{first_passing_map}的挑战那一刻开始，噔噔~我家的{player_name}在ddnet的冒险之旅就正式启动啦！\n在过去的一年里，你用肉肉的小手玩了{played_time}小时的这款游戏，真是个勤劳的小豆包呢！最长的一天出现在{longest_time_date}，你和游戏度过了甜蜜的{longest_time}小时，好像是在无尽的糖果森林中遨游呀！说起来，你还记得那个夜晚吗？{lasted_palaying_time_date}深夜{lasted_palaying_time_time}你成功通关{lasted_palaying_map}，就像是在梦境中找到了宝藏，真是证明了你持之以恒的爱好和坚定不移的精神哟！而你在{map_with_highest_score}获得的最高分数是惊人的{highest_score}分，这也足以证明你的技艺和实力了。'
+        if number_of_months != 0:
+            annual_summary_5 +=f'在{full_attendance}这{number_of_months}个月中，你每天都会抽出时间来享受游戏，真是个游戏狂魔呢！'
+        annual_summary_5 +=f'过去的一年，你累积了{scores_obtained_past_year}分，这个数字就是对你努力和技巧的最好证明。\n在你的游戏历程中，{map_with_most_completion_times}显然是你最常挑战并成功的地图，你过了{most_completion_times}次，这充分展示了你对它的热爱和精通。与此同时，{favorite_partner}成为了你最喜欢的合作伙伴，你们两个一起过图了{favorite_partner_times}次，这可真是个强大的二人组合呢！\n回首过去的一年，你的表现无疑是让人眼花缭乱的。在新的一年里，我希望你能继续享受游戏的快乐，保持热情，接受更多的挑战，并与你的合作伙伴共同创造更多的辉煌！让我们一起期待未来的每一天，祝你游戏愉快，噔噔~！'
+
+        # 年度总结创新6版
+        annual_summary_6 =f'自{first_passing_map_time}你轻轻地踏入了{first_passing_map}的胜利之门，啊，{player_name}，就在那一刻，你的ddnet旅程像诗一般展开了。\n在过去的一年里，你以{played_time}小时的时间，像是在临摹一幅精美画卷，将这款游戏深深铭记在心。最长的一天出现在{longest_time_date}，那一天，你与游戏相伴了{longest_time}小时，宛如在浩瀚的星空下，陷入了一段深深的沉思。你可还记得{lasted_palaying_time_date}那个深夜{lasted_palaying_time_time}的时刻？你成功通关了{lasted_palaying_map}，那一刻，就像是在琴弦上拂过一道清亮的音符，证明了你的执着和热情。而你在{map_with_highest_score}所取得的{highest_score}分，仿佛是最纯洁的白色，展示了你超凡的技艺。'
+        if number_of_months != 0:
+            annual_summary_6 +=f'在{full_attendance}的{number_of_months}个月中，你每一天都会抽出时间来温柔对待这场游戏，如同每日书写一首甜美的小诗。'
+        annual_summary_6 +=f'过去的一年，你累积了{scores_obtained_past_year}分，这个数字就像是你历尽风雨后绽放的一朵花。\n在你的游戏历程中，{map_with_most_completion_times}是你最热衷的舞台，你在这里演绎了{most_completion_times}次精彩。同时，{favorite_partner}成为了你最频繁的合作伙伴，你们共同创造了{favorite_partner_times}次美妙的和谐之声，仿佛是一首动人的二重奏。\n回望过去的一年，你的表现就像是一篇美妙的诗歌。新的一年，愿你依旧享受游戏的乐趣，面对更多的挑战，并与你的伙伴共同创造属于你们的故事。期待未来每一个温馨的日子，祝你游戏愉快，一路芬芳~'
+
+        # 年度总结创新7版
+        annual_summary_7 =f'从...嗯，那个，就是{first_passing_map_time}你第一次通过{first_passing_map}的那一刻开始，呃...{player_name}您在ddnet的旅程，就像悄悄开启了一扇门...\n过去的一年里，您，您投入了{played_time}小时在这款游戏上。最...最长的一天是在{longest_time_date}，那天您玩了整整{longest_time}小时，简直像是被游戏吸引得无法自拔呢。还有...那个晚上，您记得吗？{lasted_palaying_time_date}深夜{lasted_palaying_time_time}，您成功通关了{lasted_palaying_map}，虽然我不好意思说，但那真的证明了您的坚持和热爱。而且，您在{map_with_highest_score}获得的高分达到了{highest_score}分，这，这也足以见证您的技艺和水平啦。'
+        if number_of_months != 0:
+            annual_summary_7 +=f'在过去的{full_attendance}这{number_of_months}个月里，您每天都会抽出时间来，来玩游戏。'
+        annual_summary_7 +=f'过去的一年，您共计积累了{scores_obtained_past_year}分，这个成绩...我想，这应该证明了您的努力和技巧吧。\n在您的游戏历程中，{map_with_most_completion_times}是您最常挑战并成功的，您在那里成功了{most_completion_times}次，这应该反映出您对这张地图的喜爱和技巧。同时，{favorite_partner}成为了您最常合作的伙伴，你们一起过图了{favorite_partner_times}次，我想，这应该展示了你们深厚的默契和友情吧。\n回顾过去的一年，您的表现无疑是...是杰出的。在新的一年中，希望您能继续享受游戏的乐趣，保持对挑战的热情，并与您的伙伴一起创造更多的精彩。期待未来的每一天，祝您游戏愉快，嗯...再见。'
+
+
+        if random.choice([1,2])==1:
+            return annual_summary
+        else:
+            return random.choice([annual_summary_1,annual_summary_2,annual_summary_3,annual_summary_4,annual_summary_5,annual_summary_6,annual_summary_7])
 
     elif player_data == {}:
         return random.choice([f'{player_name}，看起来你的游戏ID在玩捉迷藏，我们暂时找不到它呢！',
