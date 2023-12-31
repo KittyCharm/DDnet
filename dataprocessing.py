@@ -1,5 +1,6 @@
 # import json
 from datetime import datetime, timezone, timedelta
+from netrequest import get_player_data_from_ddnet, get_map_ranking_information
 import calendar
 
 # 获取json文件名，返回格式化后的数据
@@ -38,8 +39,8 @@ def get_longest_time_for_playing(player_data):
 
 # 获取玩家数据，返回最晚过图的图名和时间
 def get_latest_time_for_passing_map(player_data):
-    smap=''
-    sdate=''
+    smap = ''
+    sdate = ''
     stime = timedelta(hours=24)
     for types_key, types_value in player_data['types'].items():
         for maps_key, maps_value in types_value["maps"].items():
@@ -68,10 +69,11 @@ def get_map_with_highest_score(player_data):
     map_with_highest_score = []
     for types_key, types_value in player_data['types'].items():
         for maps_key, maps_value in types_value["maps"].items():
-            timestamp=maps_value.get('first_finish')
+            timestamp = maps_value.get('first_finish')
             if timestamp != None:
-                #年份限制
-                if datetime.fromtimestamp(timestamp, tz=timezone.utc).astimezone(timezone(timedelta(hours=8))).year != 2023:
+                # 年份限制
+                if datetime.fromtimestamp(timestamp, tz=timezone.utc).astimezone(
+                        timezone(timedelta(hours=8))).year != 2023:
                     continue
                 if highest_score < maps_value['points']:
                     highest_score = maps_value['points']
@@ -134,10 +136,10 @@ def get_full_attendance(player_data):
             full_attendence.append(i[:2])
         if i[1] == 2 and ((calendar.isleap(i[0]) and i[2] == 29) or (not calendar.isleap(i[0]) and i[2] == 28)):
             full_attendence.append(i[:2])
-    full_attendence_2023=[]
-    #取2023部分
+    full_attendence_2023 = []
+    # 取2023部分
     for i in full_attendence:
-        if i[0]==2023:
+        if i[0] == 2023:
             full_attendence_2023.append(i)
     return full_attendence_2023
 
@@ -164,3 +166,47 @@ def get_scores_obtained_past_year(player_data):
                 if local_time.year == 2023:
                     total_points = total_points + maps_value['points']
     return total_points
+
+
+# --------------------------------------------------------------------------------
+def get_best_ranking(player_name):
+    player_data = get_player_data_from_ddnet(player_name)
+    candidate_maps = {}
+    for types_key, types_value in player_data['types'].items():
+        for maps_key, maps_value in types_value["maps"].items():
+            if maps_value.get('rank') != None:
+                candidate_maps[maps_key] = maps_value
+
+    best_ranking_20 = sorted(candidate_maps.items(), key=lambda x: x[1]["rank"])[:20]
+    best_ranking_20_result = [[name, {'rank': info['rank'], 'team_rank': info.get('team_rank'), 'time': info['time']}]
+                              for name, info in best_ranking_20]
+    count = 0
+
+    for best_key, best_value in best_ranking_20:
+        # print(best_key)
+        map_ranking_information = get_map_ranking_information(best_key)
+        for i in map_ranking_information['ranks']:
+            if player_name == i['player']:
+                best_ranking_20_result[count][1]['rank_CHN'] = i['rank']
+                break
+        if map_ranking_information['team_ranks'] != []:
+            for i in map_ranking_information['team_ranks']:
+                for j in i['players']:
+                    if player_name == j:
+                        best_ranking_20_result[count][1]['team_rank_CHN'] = i[
+                            'rank']  # str(i['rank'])+f'{i['players']}'
+                        break
+        best_ranking_20_result[count][1]['type'] = map_ranking_information['type']
+        best_ranking_20_result[count][1]['difficulty'] = map_ranking_information['difficulty']
+        best_ranking_20_result[count][1]['points'] = map_ranking_information['points']
+        count += 1
+
+    return best_ranking_20_result
+
+
+def number_to_circle_symbol(number):
+    if 1 <= number <= 20:
+        unicode_code_point = 0x245F + number  # U+245F is ①, U+2460 is ①, U+2461 is ②, and so on
+        return chr(unicode_code_point)
+    else:
+        return "Number out of range"
