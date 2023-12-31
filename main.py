@@ -187,7 +187,7 @@ def obtain_annual_summary(player_name):
         annual_summary_7 +=f'过去的一年，您共计积累了{scores_obtained_past_year}分，这个成绩...我想，这应该证明了您的努力和技巧吧。\n在您的游戏历程中，{map_with_most_completion_times}是您最常挑战并成功的，您在那里成功了{most_completion_times}次，这应该反映出您对这张地图的喜爱和技巧。同时，{favorite_partner}成为了您最常合作的伙伴，你们一起过图了{favorite_partner_times}次，我想，这应该展示了你们深厚的默契和友情吧。\n回顾过去的一年，您的表现无疑是...是杰出的。在新的一年中，希望您能继续享受游戏的乐趣，保持对挑战的热情，并与您的伙伴一起创造更多的精彩。期待未来的每一天，祝您游戏愉快，嗯...再见。'
 
 
-        if random.choice([1,2])==1 or favorite_partner_information != '':
+        if random.choice([1,2])==1 or favorite_partner_information == '':
             return annual_summary
         else:
             return random.choice([annual_summary_1,annual_summary_2,annual_summary_3,annual_summary_4,annual_summary_5,annual_summary_6,annual_summary_7])
