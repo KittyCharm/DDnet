@@ -171,6 +171,8 @@ def get_scores_obtained_past_year(player_data):
 # --------------------------------------------------------------------------------
 def get_best_ranking(player_name):
     player_data = get_player_data_from_ddnet(player_name)
+    if player_data == '' or player_data == {}:
+        return ''
     candidate_maps = {}
     for types_key, types_value in player_data['types'].items():
         for maps_key, maps_value in types_value["maps"].items():

@@ -211,19 +211,21 @@ def obtain_annual_summary(player_name):
 @app.route('/rank20/<player_name>/')
 def Obtain_best_ranking_result(player_name):
     best_ranking = get_best_ranking(player_name)
+    if best_ranking=='':
+        return '查询失败，请检查id或稍后再试'
     best_ranking_result = ''
     count = 1
     for i in best_ranking:
         best_ranking_result += f'{number_to_circle_symbol(count)}'
-        best_ranking_result += f'【{i[0]}】，【{i[1]['type']}{i[1]['difficulty']}星{i[1]['points']}分】，世界个人排名：{i[1]['rank']}，'
+        best_ranking_result += f"【{i[0]}】，【{i[1]['type']}{i[1]['difficulty']}星{i[1]['points']}分】，世界个人排名：{i[1]['rank']}，"
         if i[1]['team_rank'] != None:
-            best_ranking_result += f'世界队伍排名：{i[1]['team_rank']}，'
+            best_ranking_result += f"世界队伍排名：{i[1]['team_rank']}，"
         else:
             best_ranking_result += f'世界队伍排名：无，'
         if i[1].get('rank_CHN') != None:
-            best_ranking_result += f'国服个人排名{i[1]['rank_CHN']}，'
+            best_ranking_result += f"国服个人排名{i[1]['rank_CHN']}，"
         if i[1].get('team_rank_CHN') != None:
-            best_ranking_result += f'国服队伍排名{i[1]['team_rank_CHN']}，'
+            best_ranking_result += f"国服队伍排名{i[1]['team_rank_CHN']}，"
         hours, remainder = divmod(i[1]['time'], 3600)
         minutes, seconds = divmod(remainder, 60)
         milliseconds = int((seconds - int(seconds)) * 1000)
