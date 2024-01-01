@@ -175,6 +175,8 @@ def get_best_ranking(player_name):
         return ''
     candidate_maps = {}
     for types_key, types_value in player_data['types'].items():
+        if types_key == 'Fun':
+            continue
         for maps_key, maps_value in types_value["maps"].items():
             if maps_value.get('rank') != None:
                 candidate_maps[maps_key] = maps_value

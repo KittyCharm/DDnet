@@ -210,10 +210,12 @@ def obtain_annual_summary(player_name):
 
 @app.route('/rank20/<player_name>/')
 def Obtain_best_ranking_result(player_name):
+    player_data=get_player_data_from_ddnet(player_name)
     best_ranking = get_best_ranking(player_name)
     if best_ranking=='':
         return '查询失败，请检查id或稍后再试'
     best_ranking_result = ''
+    best_ranking_result+=f"【皮肤越粉】{player_data['points']['points']}分\nRank Best 20 :\n"
     count = 1
     for i in best_ranking:
         best_ranking_result += f'{number_to_circle_symbol(count)}'
