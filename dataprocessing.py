@@ -188,7 +188,7 @@ def get_best_ranking(player_name):
 
     for best_key, best_value in best_ranking_20:
         # print(best_key)
-        t=0
+        t = 0
         map_ranking_information = get_map_ranking_information(best_key)
         for i in map_ranking_information['ranks']:
             if player_name == i['player']:
@@ -200,10 +200,10 @@ def get_best_ranking(player_name):
                     if player_name == j:
                         best_ranking_20_result[count][1]['team_rank_CHN'] = i[
                             'rank']  # str(i['rank'])+f'{i['players']}'
-                        t=1
+                        t = 1
                         break
-                    if t==1:
-                        break
+                if t == 1:
+                    break
         best_ranking_20_result[count][1]['type'] = map_ranking_information['type']
         best_ranking_20_result[count][1]['difficulty'] = map_ranking_information['difficulty']
         best_ranking_20_result[count][1]['points'] = map_ranking_information['points']
